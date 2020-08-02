@@ -1,0 +1,120 @@
+
+//多数元素 （亚马逊、字节跳动、Facebook 在半年内面试中考过）
+
+class Solution {
+    public int majorityElement(int[] nums) {
+        Map<Integer, Long> map = Arrays.stream(nums).boxed().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        long limit = nums.length >> 1;
+        for (Map.Entry<Integer, Long> entry : map.entrySet())
+            if (entry.getValue() > limit)
+                return entry.getKey();
+        return -1;
+    }
+}
+
+
+//柠檬水找零（亚马逊在半年内面试中考过）
+class Solution {
+    public boolean lemonadeChange(int[] bills) {
+        int five = 0, ten = 0;
+        for (int bill: bills) {
+            if (bill == 5)
+                five++;
+            else if (bill == 10) {
+                if (five == 0) return false;
+                five--;
+                ten++;
+            } else {
+                if (five > 0 && ten > 0) {
+                    five--;
+                    ten--;
+                } else if (five >= 3) {
+                    five -= 3;
+                } else {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+}
+
+
+//买卖股票的最佳时机 II （亚马逊、字节跳动、微软在半年内面试中考过）
+//贪心算法，一次遍历，只要今天价格小于明天价格就在今天买入然后明天卖出，时间复杂度O(n)
+
+public class Solution {
+    
+    public int maxProfit(int[] prices) {
+        int res = 0;
+        int len = prices.length;∑
+        for (int i = 0; i < len - 1; i++) {
+            int diff = prices[i + 1] - prices[i];
+            if (diff > 0) {
+                res += diff;
+            }
+        }
+        return res;
+    }
+}
+//分发饼干（亚马逊在半年内面试中考过）
+
+//贪心策略就是最优策略
+class Solution {
+    public int findContentChildren(int[] grid, int[] size) {
+        if (grid == null || size == null) return 0;
+        Arrays.sort(grid);
+        Arrays.sort(size);
+        int gi = 0, si = 0;
+        while (gi < grid.length && si < size.length) {
+            if (grid[gi] <= size[si]) {
+                gi++;
+            }
+            si++;
+        }
+        return gi;
+    }
+}
+
+
+//Pow(x, n) （Facebook 在半年内面试常考）
+//分治
+class Solution {
+    public double myPow(double x, int n) {
+        if(x == 0.0f) return 0.0d;
+        long b = n;
+        double res = 1.0;
+        if(b < 0) {
+            x = 1 / x;
+            b = -b;
+        }
+        while(b > 0) {
+            if((b & 1) == 1) res *= x;
+            x *= x;
+            b >>= 1;
+        }
+        return res;
+    }
+}
+
+//子集（Facebook、字节跳动、亚马逊在半年内面试中考过）
+//归去来兮
+class Solution {
+public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> res = new ArrayList<>();
+    backtrack(0, nums, res, new ArrayList<Integer>());
+    return res;
+    
+}
+
+private void backtrack(int i, int[] nums, List<List<Integer>> res, ArrayList<Integer> tmp) {
+    res.add(new ArrayList<>(tmp));
+    for (int j = i; j < nums.length; j++) {
+        tmp.add(nums[j]);
+        backtrack(j + 1, nums, res, tmp);
+        tmp.remove(tmp.size() - 1);
+    }
+}
+}
+
