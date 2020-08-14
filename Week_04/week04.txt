@@ -1,0 +1,121 @@
+
+
+
+最小路径和（亚马逊、高盛集团、谷歌在半年内面试中考过）
+
+
+public int minPathSum1(int[][] grid){
+    int row = grid.length;//行
+    int vertical = grid[0].length;//竖
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j <vertical; j++) {
+            if (i == 0 && j ==0) continue;
+            else if (i ==0){
+                grid[i][j] += grid[i][j-1];
+            } else if (j == 0){
+                grid[i][j] += grid[i-1][j];
+            } else {
+                grid[i][j] += Math.min(grid[i - 1][j],grid[i][j-1]);
+            }
+        }
+    }
+    return grid[row -1][vertical -1];//最后一个格子是最小路劲答案
+}
+
+
+
+解码方法（亚马逊、Facebook、字节跳动在半年内面试中考过）
+
+public int numDecodings5 (String s){
+    if (s == null || s.length()==0) return 0;
+    int len = s.length();
+    int[] dp = new int[len+1];
+    dp[len] = 1;
+    if (s.charAt(len-1)=='0'){
+        dp[len-1] = 0;
+    }else {
+        dp[len-1] = 1;
+    }
+    for (int i = len -2; i >=0 ; i--) {
+        int shiWei = (s.charAt(i) - '0')*10;
+        int geWei = s.charAt(i+1)-'0';
+        if (shiWei+geWei<26){
+            dp[i] = dp[i+1] + dp[i+2];
+        }else {
+            dp[i] = dp[i+1];
+        }
+    }
+    return dp[0];
+}
+
+    •    最大正方形（华为、谷歌、字节跳动在半年内面试中考过）
+public int maximalSquare(char[][] a) {
+    if(a.length == 0) return 0;
+    int m = a.length, n = a[0].length, result = 0;
+    int[][] b = new int[m+1][n+1];
+    for (int i = 1 ; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if(a[i-1][j-1] == '1') {
+                b[i][j] = Math.min(Math.min(b[i][j-1] , b[i-1][j-1]), b[i-1][j]) + 1;
+                result = Math.max(b[i][j], result); // update result
+            }
+        }
+    }
+    return result*result;
+}
+
+
+任务调度器（Facebook 在半年内面试中常考）
+
+public int leastInterval ( char[] tasks, int n){
+    int[] map = new int[26];
+    for (char c : tasks)
+        map[c - 'A']++;
+    Arrays.sort(map);
+    int max_val = map[25] - 1, idle_slots = max_val * n;
+    for (int i = 24; i >= 0 && map[i] > 0; i--) {
+        idle_slots -= Math.min(map[i], max_val);
+    }
+    return idle_slots > 0 ? idle_slots + tasks.length : tasks.length;
+}
+
+
+
+
+    •    回文子串（Facebook、苹果、字节跳动在半年内面试中考过）
+public int countSubstrings (String S){
+    int N = S.length(), ans = 0;
+    for (int center = 0; center <= 2 * N - 1; ++center) {
+        int left = center / 2;
+        int right = left + center % 2;
+        while (left >= 0 && right < N && S.charAt(left) == S.charAt(right)) {
+            ans++;
+            left--;
+            right++;
+        }
+    }
+    return ans;
+}
+
+
+
+    •    最长有效括号（字节跳动、亚马逊、微软在半年内面试中考过）
+    
+    public int longestValidParentheses(String s) {
+        int maxans = 0;
+        int dp[] = new int[s.length()];
+        for (int i = 1; i < s.length(); i++) {
+            if (s.charAt(i) == ')') {
+                if (s.charAt(i - 1) == '(') {
+                    dp[i] = (i >= 2 ? dp[i - 2] : 0) + 2;
+                } else if (i - dp[i - 1] > 0 && s.charAt(i - dp[i - 1] - 1) == '(') {
+                    dp[i] = dp[i - 1] + ((i - dp[i - 1]) >= 2 ? dp[i - dp[i - 1] - 2] : 0) + 2;
+                }
+                maxans = Math.max(maxans, dp[i]);
+            }
+        }
+        return maxans;
+    }
+
+
+
