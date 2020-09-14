@@ -1,0 +1,161 @@
+1 爬楼梯（阿里巴巴、腾讯、字节跳动在半年内面试常考）
+
+ class Solution {
+
+public int climbStairs(int n) {
+    if(n == 0 || n == 1 || n == 2){return n;}
+    int[] mem = new int[n];
+    mem[0] = 1;
+    mem[1] = 2;
+    for(int i = 2; i < n; i++){
+        mem[i] = mem[i-1] + mem[i-2];
+    }
+    return mem[n-1];
+}
+}
+
+2 位 1 的个数（Facebook、苹果在半年内面试中考过）
+
+public class Solution {
+    // you need to treat n as an unsigned value
+    public int hammingWeight(int n) {
+        int ones = 0;
+    	while(n!=0) {
+    		ones = ones + (n & 1);
+    		n = n>>>1;
+    	}
+    	return ones;
+    }
+}
+
+3 2 的幂（谷歌、亚马逊、苹果在半年内面试中考过）
+
+
+class Solution {
+    public boolean isPowerOfTwo(int n) {
+        return n>0 && Integer.bitCount(n) == 1;
+
+    }
+}
+
+4 颠倒二进制位（苹果在半年内面试中考过）
+public class Solution {
+    // you need treat n as an unsigned value
+    public int reverseBits(int n) {
+        int res=0;
+    for(int i=0;i<32;i++){
+    	res= ( res << 1 ) | ( n & 1 );         
+    	n = n >> 1;                  
+    }
+    return res;
+    }
+}
+
+5 N 皇后（亚马逊、苹果、字节跳动在半年内面试中考过）
+class Solution {
+  int rows[];
+  // "hill" diagonals
+  int hills[];
+  // "dale" diagonals
+  int dales[];
+  int n;
+  // output
+  List<List<String>> output = new ArrayList();
+  // queens positions
+  int queens[];
+
+  public boolean isNotUnderAttack(int row, int col) {
+    int res = rows[col] + hills[row - col + 2 * n] + dales[row + col];
+    return (res == 0) ? true : false;
+  }
+
+  public void placeQueen(int row, int col) {
+    queens[row] = col;
+    rows[col] = 1;
+    hills[row - col + 2 * n] = 1;  // "hill" diagonals
+    dales[row + col] = 1;   //"dale" diagonals
+  }
+
+  public void removeQueen(int row, int col) {
+    queens[row] = 0;
+    rows[col] = 0;
+    hills[row - col + 2 * n] = 0;
+    dales[row + col] = 0;
+  }
+
+  public void addSolution() {
+    List<String> solution = new ArrayList<String>();
+    for (int i = 0; i < n; ++i) {
+      int col = queens[i];
+      StringBuilder sb = new StringBuilder();
+      for(int j = 0; j < col; ++j) sb.append(".");
+      sb.append("Q");
+      for(int j = 0; j < n - col - 1; ++j) sb.append(".");
+      solution.add(sb.toString());
+    }
+    output.add(solution);
+  }
+
+  public void backtrack(int row) {
+    for (int col = 0; col < n; col++) {
+      if (isNotUnderAttack(row, col)) {
+        placeQueen(row, col);
+        // if n queens are already placed
+        if (row + 1 == n) addSolution();
+          // if not proceed to place the rest
+        else backtrack(row + 1);
+        // backtrack
+        removeQueen(row, col);
+      }
+    }
+  }
+
+  public List<List<String>> solveNQueens(int n) {
+    this.n = n;
+    rows = new int[n];
+    hills = new int[4 * n - 1];
+    dales = new int[2 * n - 1];
+    queens = new int[n];
+
+    backtrack(0);
+    return output;
+  }
+}
+
+6 N 皇后 II （亚马逊在半年内面试中考过）
+class Solution {
+  private final Set<Integer> occupiedCols = new HashSet<Integer>();
+private final Set<Integer> occupiedDiag1s = new HashSet<Integer>();
+private final Set<Integer> occupiedDiag2s = new HashSet<Integer>();
+public int totalNQueens(int n) {
+    return totalNQueensHelper(0, 0, n);
+}
+
+private int totalNQueensHelper(int row, int count, int n) {
+    for (int col = 0; col < n; col++) {
+        if (occupiedCols.contains(col))
+            continue;
+        int diag1 = row - col;
+        if (occupiedDiag1s.contains(diag1))
+            continue;
+        int diag2 = row + col;
+        if (occupiedDiag2s.contains(diag2))
+            continue;
+        // we can now place a queen here
+        if (row == n-1)
+            count++;
+        else {
+            occupiedCols.add(col);
+            occupiedDiag1s.add(diag1);
+            occupiedDiag2s.add(diag2);
+            count = totalNQueensHelper(row+1, count, n);
+            // recover
+            occupiedCols.remove(col);
+            occupiedDiag1s.remove(diag1);
+            occupiedDiag2s.remove(diag2);
+        }
+    }
+    
+    return count;
+}
+}
