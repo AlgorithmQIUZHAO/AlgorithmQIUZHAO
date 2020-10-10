@@ -1,0 +1,160 @@
+1 数组的相对排序（谷歌在半年内面试中考过）
+
+class Solution {
+public int[] relativeSortArray(int[] arr1, int[] arr2) {
+        //create map for counting numbers in arr1. Initialize everything with zeroes
+        Map<Integer, Integer> m = new HashMap();
+        for (int num : arr2) {
+            m.put(num, 0);
+        }
+        int last = arr1.length - 1;
+        int[] res = new int[arr1.length];
+        //iterate over arr1  and count numbers of time this element is in arr1
+        for (int num : arr1) {
+            //if number is from arr2 - increment count
+            if (m.containsKey(num))
+                m.put(num, m.get(num) + 1);
+            //otherwise add element to the end of res and decrement the pointer
+            else {
+                res[last--] = num;
+            }
+        }
+        //iterate over arr2, fill elements in res based on it's count 
+        int p = 0;
+        for (int num : arr2) {
+            int c = m.get(num);
+            for (int i = 0; i < c; i++) {
+                res[p++] = num;
+            }
+        }
+        //now sort the leftovers - p points to the first element in series of those from arr2 that are not in arr1 
+        Arrays.sort(res, p, res.length);
+        return res;
+    }
+}
+
+2 有效的字母异位词（Facebook、亚马逊、谷歌在半年内面试中考过）
+public class Solution {
+    public boolean isAnagram(String s, String t) {
+        int[] alphabet = new int[26];
+        for (int i = 0; i < s.length(); i++) alphabet[s.charAt(i) - 'a']++;
+        for (int i = 0; i < t.length(); i++) alphabet[t.charAt(i) - 'a']--;
+        for (int i : alphabet) if (i != 0) return false;
+        return true;
+    }
+}
+
+3 字符串中的第一个唯一字符
+（亚马逊、微软、Facebook 在半年内面试中考过）
+class Solution {
+public int firstUniqChar(String s) {
+	if(s==null || s.length()==0) {
+		return -1;
+	}
+	char[] chars = s.toCharArray();
+	Map<Character,Integer> charsPositions = new HashMap<>();
+	List<Integer> uniqsPositions = new ArrayList<>();
+	for(int i=0; i<chars.length; i++) {
+		char c = chars[i];
+		if(charsPositions.containsKey(c)) {
+			Integer charFirstPosition = charsPositions.get(c);
+			uniqsPositions.remove(charFirstPosition);
+		} else {
+			charsPositions.put(c,i);
+			uniqsPositions.add(i);
+		}
+	}
+	return uniqsPositions.isEmpty()?-1:uniqsPositions.get(0);
+}
+}
+
+4 反转字符串 II （亚马逊在半年内面试中考过）
+
+class Solution {
+    public String reverseStr(String s, int k) {
+        StringBuilder sb,ans;
+        sb = new StringBuilder(s);
+        ans = new StringBuilder("");
+        int size = s.length(), left=0,right=k;
+       
+    while(size>0){
+        if(2*k <= size){
+            StringBuilder str = new StringBuilder(sb.substring(left,right));
+            str.reverse();
+            ans.append(str);
+            ans.append(sb,right,right+k);
+            left += 2*k;
+            right += 2*k;
+            size = size - 2*k;
+        }
+        else if(size < k){
+           StringBuilder str = new StringBuilder(sb.substring(left,sb.length()));
+           str.reverse();
+           ans.append(str);
+           size=0;
+        }
+        else if(size >= k){
+            StringBuilder str = new StringBuilder(sb.substring(left,right));
+            str.reverse();
+            ans.append(str);
+            ans.append(sb,right,sb.length());
+            size = 0;
+        }
+    }    
+        return ans.toString();    
+            
+    }
+}
+
+
+5 翻转字符串里的单词（微软、字节跳动、苹果在半年内面试中考过）
+class Solution {
+    public String reverseWords(String s) {
+    if (s == null) return null;
+    
+    char[] a = s.toCharArray();
+    int n = a.length;
+    
+    // step 1. reverse the whole string
+    reverse(a, 0, n - 1);
+    // step 2. reverse each word
+    reverseWords(a, n);
+    // step 3. clean up spaces
+    return cleanSpaces(a, n);
+  }
+  
+  void reverseWords(char[] a, int n) {
+    int i = 0, j = 0;
+      
+    while (i < n) {
+      while (i < j || i < n && a[i] == ' ') i++; // skip spaces
+      while (j < i || j < n && a[j] != ' ') j++; // skip non spaces
+      reverse(a, i, j - 1);                      // reverse the word
+    }
+  }
+  
+  // trim leading, trailing and multiple spaces
+  String cleanSpaces(char[] a, int n) {
+    int i = 0, j = 0;
+      
+    while (j < n) {
+      while (j < n && a[j] == ' ') j++;             // skip spaces
+      while (j < n && a[j] != ' ') a[i++] = a[j++]; // keep non spaces
+      while (j < n && a[j] == ' ') j++;             // skip spaces
+      if (j < n) a[i++] = ' ';                      // keep only one space
+    }
+  
+    return new String(a).substring(0, i);
+  }
+  
+  // reverse a[] from a[i] to a[j]
+  private void reverse(char[] a, int i, int j) {
+    while (i < j) {
+      char t = a[i];
+      a[i++] = a[j];
+      a[j--] = t;
+    }
+  }
+  
+}
+6 最长回文子串（亚马逊、字节跳动、华为在半年内面试中常考）
